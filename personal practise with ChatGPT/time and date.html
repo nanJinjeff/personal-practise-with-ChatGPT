@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Custom Clock</title>
+    <style>
+      body {
+        background-image: url('wood background.jpg');   /*https://www.istockphoto.com/illustrations/light-wood-background*/
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      #clock {
+        font-size: 8rem;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+      }
+      #options {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      button {
+        font-size: 1.5rem;
+        margin: 0 10px;
+		border-radius: 5px;
+      }
+	  .format:hover{
+	    background-color:green;
+	  }
+	  
+	  
+	  /* Dropdown Button */
+     .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      /* Dropdown Content (Hidden by Default) */
+     .dropdown-content {
+        display: none;
+        position: absolute;
+        z-index: 1;
+      }
+
+     /* Links inside the dropdown */
+    .dropdown-content a {
+       color: black;
+       padding: 12px 16px;
+       text-decoration: none;
+       display: block;
+      }
+
+    /* Change color of dropdown links on hover */
+     .dropdown-content a:hover {background-color: #f1f1f1}
+
+    /* Show the dropdown menu on hover */
+     .dropdown:hover .dropdown-content {
+      display: block;
+     }
+
+    /* Change the background color of the dropdown button when the dropdown content is shown */
+     .dropdown:hover .dropbtn {
+      background-color: green;
+     }
+	 
+	 .labelposition{
+	   position:absolute;
+	   top:190px;
+	   left:300px
+	 }
+
+    </style>
+  </head>
+  <body>
+  <h2 id="timeLable" class="labelposition">Australia/Sydney TIME</h2>
+    <h1 id="clock"></h1>
+	
+      <div id="options">
+ <div class="dropdown">
+  <button class="dropbtn">Select Timezone</button>
+  <div class="dropdown-content">
+    <a href="#" onclick="changeTimezone('America/New_York')">New York (GMT-4)</a>
+    <a href="#" onclick="changeTimezone('America/Los_Angeles')">Los Angeles (GMT-7)</a>
+    <a href="#" onclick="changeTimezone('Europe/London')">London (GMT+1)</a>
+    <a href="#" onclick="changeTimezone('Europe/Berlin')">Berlin (GMT+2)</a>
+    <a href="#" onclick="changeTimezone('Asia/Tokyo')">Tokyo (GMT+9)</a>
+    <a href="#" onclick="changeTimezone('Australia/Sydney')">Sydney (GMT+11)</a>
+  </div>
+</div>
+  <button class="format" id="format-btn">12h format</button>
+</div>
+
+    <audio id="chime">
+      <source src="bells.mp3" type="audio/mp3">
+    </audio>
+ <script>
+      class CustomDateTime {
+        constructor(timezone, is24hFormat) {
+          this.timezone = timezone;
+          this.is24hFormat = is24hFormat;
+        }
+
+        getCurrentDateTime() {
+           const now = new Date().toLocaleString('en-US', { timeZone: this.timezone });
+           const currentDate = new Date().toLocaleDateString('en-US', { timeZone: this.timezone });
+             if (this.is24hFormat) {
+           const hours = new Date(now).getHours();
+           const minutes = new Date(now).getMinutes();
+           const seconds = new Date(now).getSeconds();
+            return `${currentDate} ${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        } else {
+           const hours = new Date(now).getHours();
+           const ampm = hours >= 12 ? 'PM' : 'AM';
+           const adjustedHours = hours % 12 || 12;
+           const minutes = new Date(now).getMinutes();
+           const seconds = new Date(now).getSeconds();
+           return `${currentDate} ${adjustedHours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds} ${ampm}`;
+        }
+      }
+
+      }
+
+      const clockEl = document.getElementById('clock');
+      const formatBtn = document.getElementById('format-btn');
+      const chime = document.getElementById('chime');
+
+      let customDateTime = new CustomDateTime();
+
+      function updateTime() {
+        const currentDateTime = customDateTime.getCurrentDateTime();
+        clockEl.innerText = currentDateTime;
+        if (currentDateTime.endsWith('00:00')) {
+		 const hours = new Date().getHours();
+		 for(var i=0;i<hours;i++){
+          chime.play();
+		  }
+        }
+      }
+      updateTime();
+      setInterval(updateTime, 1000);
+
+     function changeTimezone(timezone) {
+  customDateTime.timezone = timezone;
+    const label = document.getElementById('timeLable');
+	label.innerText=timezone + " TIME";
+  updateTime();
+}
+
+
+
+
+      formatBtn.addEventListener('click', () => {
+          const button = document.getElementById("format-btn");
+          const buttonText = button.innerText;
+  if(buttonText == "12h format"){
+    customDateTime.is24hFormat = false;
+    button.innerText = "24h format";
+    updateTime();
+  } else {
+    customDateTime.is24hFormat = true;
+    button.innerText = "12h format";
+    updateTime();
+  }
+});
+    </script>
+  </body>
+</html>
+
+
