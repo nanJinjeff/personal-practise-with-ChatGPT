@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Custom Clock</title>
     <style>
-      body {
-        background-image: url('wood background.jpg');   /*https://www.istockphoto.com/illustrations/light-wood-background*/
+      .sydneytimezonebackground{
+      background-image: url('sydney.jpg');   /*https://wall.alphacoders.com/big.php?i=470130*/
         background-repeat: no-repeat;
         background-size: cover;
         height: 100vh;
@@ -13,6 +13,57 @@
         justify-content: center;
         align-items: center;
       }
+
+      .tokyotimezonebackground{
+      background-image: url('tokyo.jpg');   /*https://www.istockphoto.com/illustrations/light-wood-background*/
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .losangelestimezonebackground{
+      background-image: url('los angeles.jpg');   /*https://wallpaperaccess.com/los-angeles-1920x1080*/
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .newyorktimezonebackground{ 
+      background-image: url('new york.jpg');   /*https://wallpapersden.com/new-york-cityscape-wallpaper/1920x1080/*/
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .berlintimezonebackground{
+      background-image: url('berlin.jpg');   /*https://wall.alphacoders.com/big.php?i=710914*/
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      
+      }
+
+      .londontimezonebackground{
+      background-image: url('london.jpg');   /*https://www.pixelstalk.net/desktop-london-hd-wallpapers*/
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
       #clock {
         font-size: 8rem;
         text-align: center;
@@ -45,6 +96,7 @@
         display: none;
         position: absolute;
         z-index: 1;
+        background-color: rgba(0, 128, 0, 0.5);
       }
 
      /* Links inside the dropdown */
@@ -76,10 +128,10 @@
 
     </style>
   </head>
-  <body>
+  <body id="body" class="sydneytimezonebackground">
   <h2 id="timeLable" class="labelposition">Australia/Sydney TIME</h2>
     <h1 id="clock"></h1>
-	
+	<audio id="audio" src="bell.mp3"></audio>
       <div id="options">
  <div class="dropdown">
   <button class="dropbtn">Select Timezone</button>
@@ -96,6 +148,7 @@
 </div>
 
  <script>
+ //time
       class CustomDateTime {
         constructor(timezone, is24hFormat) {
           this.timezone = timezone;
@@ -124,24 +177,63 @@
 
       const clockEl = document.getElementById('clock');
       const formatBtn = document.getElementById('format-btn');
-      
-      let customDateTime = new CustomDateTime();
+      const bodybg = document.getElementById('body');
+	  const audio = document.getElementById('audio');
+	  
 
+      let customDateTime = new CustomDateTime();
+	  
+	 
       function updateTime() {
         const currentDateTime = customDateTime.getCurrentDateTime();
         clockEl.innerText = currentDateTime;
+		
+		if (new Date().getSeconds() === 0) {
+				audio.play();
+			}
+
       }
       updateTime();
       setInterval(updateTime, 1000);
+    
+      function changeBackground(classname){
+        bodybg.classList.remove('sydneytimezonebackground','tokyotimezonebackground','losangelestimezonebackground','newyorktimezonebackground','londontimezonebackground','berlintimezonebackground');
+          bodybg.classList.add(classname);
+      }
 
      function changeTimezone(timezone) {
   customDateTime.timezone = timezone;
-    const label = document.getElementById('timeLable');
-	label.innerText=timezone + " TIME";
+  const label = document.getElementById('timeLable');
+	      label.innerText=timezone + " TIME";
+  
+        switch(true){
+          case timezone == "America/New_York":
+                changeBackground('newyorktimezonebackground');
+                
+          break;
+          case timezone == "America/Los_Angeles":
+                changeBackground('losangelestimezonebackground');
+               
+          break;
+          case timezone == "Europe/London":
+                changeBackground('londontimezonebackground');
+                
+          break;
+          case timezone == "Europe/Berlin":
+                changeBackground('berlintimezonebackground');
+               
+          break;
+          case timezone == "Asia/Tokyo":
+                changeBackground('tokyotimezonebackground');
+                
+          break;
+          case timezone == "Australia/Sydney":
+                changeBackground('sydneytimezonebackground');
+                
+          break;
+        }
   updateTime();
 }
-
-
 
 
       formatBtn.addEventListener('click', () => {
